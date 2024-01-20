@@ -18,7 +18,7 @@ describe('Markdown transformer', () => {
     const expected = `this book [^anchor1] and some other text.
 [^anchor1]: https://codigosostenible.com`;
 
-    expect(transformer.transform(markdown)).toBe(expected);
+    expect(transformer.transform(markdown)).toEqual(expected);
   });
 
   it('should transform a markdown with many links to footnote anchors', () => {

@@ -5,35 +5,39 @@ class LinkFinder {
 
     const matches = markdown.match(regex);
 
-    if (!matches) {
-      return [];
-    }
-
-    console.log(matches);
-
-    const links: { text: string, link: string }[] = [];
-    for (let i = 0; i < matches.length; i++) {
-      const match = matches[i].match(singleRegex);
-
-      if (match !== null) {
-        const [_, text, link] = match;
-
-        links.push({ text, link });
-      }
-    }
-
-    return links;
-    // return matches.map(match => singleRegex.exec(match)).map(match => ({ text: match[1], link: match[2] })) || [];
+    return matches && matches.map(match => match.match(singleRegex))
+      .flatMap(match => match !== null ? [match] : [])
+      .map(([_, text, link]) => ({ text, link })) || [];
   }
 }
 
 describe('Link finder', () => {
+  let linkFinder: LinkFinder;
+
+  beforeEach(() => {
+    linkFinder = new LinkFinder();
+  });
+
+  it('should return an empty array given a markdown with no links', () => {
+    expect(linkFinder.findLinks(`no links here`)).toEqual([]);
+  });
+
   it('should return a list of links given a markdown string', () => {
     const markdown = `[this book](https://codigosostenible.com) and some other text.`;
     const expectedResult = [{ text: 'this book', link: 'https://codigosostenible.com' }];
 
-    const linkFinder = new LinkFinder();
+    expect(linkFinder.findLinks(markdown)).toStrictEqual(expectedResult);
+  });
+
+  it('should return a list of links give a markdown with many links', () => {
+    const markdown = `
+[this book](https://codigosostenible.com) and some other text.
+Another example is [this one](https://google.com), one of my favorites.`;
+    const expectedResult = [
+      { text: 'this book', link: 'https://codigosostenible.com' },
+      { text: 'this one', link: 'https://google.com' }
+    ];
 
     expect(linkFinder.findLinks(markdown)).toStrictEqual(expectedResult);
-  })
+  });
 });

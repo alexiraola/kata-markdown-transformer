@@ -1,16 +1,11 @@
 import { MarkdownTransformer } from '../core/transformer';
 
 describe('Markdown transformer', () => {
-  let transformer: MarkdownTransformer;
-
-  beforeEach(() => {
-    transformer = new MarkdownTransformer();
-  });
-
   it('should return the same markdown given a text with no links', () => {
     const markdown = `this book and some other text.`;
+    const transformer = MarkdownTransformer.create(markdown);
 
-    expect(transformer.transform(markdown)).toEqual(markdown);
+    expect(transformer.transform()).toEqual(markdown);
   });
 
   it('should transform a markdown with links to footnote anchors', () => {
@@ -18,7 +13,9 @@ describe('Markdown transformer', () => {
     const expected = `this book [^anchor1] and some other text.
 [^anchor1]: https://codigosostenible.com`;
 
-    expect(transformer.transform(markdown)).toEqual(expected);
+    const transformer = MarkdownTransformer.create(markdown);
+
+    expect(transformer.transform()).toEqual(expected);
   });
 
   it('should transform a markdown with many links to footnote anchors', () => {
@@ -31,7 +28,9 @@ There is another book [^anchor2] that has text too.
 [^anchor1]: https://codigosostenible.com
 [^anchor2]: https://google.com`;
 
-    expect(transformer.transform(markdown)).toEqual(expected);
+    const transformer = MarkdownTransformer.create(markdown);
+
+    expect(transformer.transform()).toEqual(expected);
   });
 
   it('should transform a markdown with repeated links to footnote anchors', () => {
@@ -46,6 +45,8 @@ Even a third book [^anchor2] could look similar.
 [^anchor1]: https://codigosostenible.com
 [^anchor2]: https://google.com`;
 
-    expect(transformer.transform(markdown)).toEqual(expected);
+    const transformer = MarkdownTransformer.create(markdown);
+
+    expect(transformer.transform()).toEqual(expected);
   });
 });
